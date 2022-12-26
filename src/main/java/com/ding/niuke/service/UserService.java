@@ -2,6 +2,7 @@ package com.ding.niuke.service;
 
 import com.ding.niuke.entity.User;
 import com.ding.niuke.mapper.UserMapper;
+import com.ding.niuke.util.CommunityConstant;
 import com.ding.niuke.util.CommunityUtils;
 import com.ding.niuke.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-public class UserService {
+public class UserService implements CommunityConstant {
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -74,10 +75,24 @@ public class UserService {
         //将属性传给thymeleaf
         Context context = new Context();
         context.setVariable("email",user.getEmail());
-        String url = domain + contextPath + "activation" +user.getId() + user.getActivationCode();
+        String url = domain + contextPath + "/activation/" +user.getId() +"/"+ user.getActivationCode();
         context.setVariable("url",url);
         String content = templateEngine.process("mail/activation", context);
         mailClient.sendMail(user.getEmail(),"activation",content);
-        return null;
+        return map;
+    }
+    //激活方法
+    public int activation(int userId,String code){
+        User user = userMapper.selectById(userId);
+        if(user.getStatus()==1){
+            return ACTIVATION_REPEAT;
+        }
+        else if(user.getActivationCode().equals(code)){
+            userMapper.updateStatus(userId,1);
+            return ACTIVATION_SUCCESS;
+        }
+        else {
+            return ACTIVATION_FAILURE;
+        }
     }
 }

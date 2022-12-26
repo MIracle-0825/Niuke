@@ -21,7 +21,7 @@
         select id,username,password,salt,email,type,status,activation_code,header_url,create_time
         from user where email = #{email}
     </select>
-    <insert id="insertUser" parameterType="User">
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         insert into user (<include refid="insertFields"></include>)
         values(#{username},#{password},#{salt},#{email},#{type},#{status},#{activationCode},
         #{headerUrl},#{createTime})

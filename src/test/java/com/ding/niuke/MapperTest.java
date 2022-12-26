@@ -33,4 +33,25 @@ public class MapperTest {
         int rows = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(rows);
     }
+    @Test
+    public void testForInsert(){
+        User user = new User();
+        user.setUsername("aaa12");
+        user.setPassword("sdasdaa");
+        user.setEmail("2311@111.com");
+        userMapper.insertUser(user);
+        int id = user.getId();
+        System.out.println(id);
+    }
+    @Test
+    public void testForUpDate(){
+        userMapper.updateStatus(157,1);
+        User user = userMapper.selectById(157);
+        System.out.println(user);
+    }
+    @Test
+    public void testForUpdate1(){
+        userMapper.updatePassword(157,"123eee");
+        System.out.println(userMapper.selectById(157));
+    }
 }

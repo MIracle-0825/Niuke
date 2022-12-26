@@ -2,6 +2,7 @@ package com.ding.niuke.mapper;
 
 import com.ding.niuke.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -16,9 +17,9 @@ public interface UserMapper {
 
     int insertUser(User user);
 
-    int updateStatus(int id,int status);
+    int updateStatus(@Param("id") int id, @Param("status") int status);
 
-    int updateHeader(int id,String headerUrl);
+    int updateHeader(@Param("id")int id, @Param("headerUrl")String headerUrl);
 
-    int updatePassword(int id,String password);
+    int updatePassword(@Param("id")int id, @Param("password")String password);
 }
