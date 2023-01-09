@@ -1,8 +1,10 @@
 package com.ding.niuke;
 
 import com.ding.niuke.entity.DiscussPost;
+import com.ding.niuke.entity.LoginTicket;
 import com.ding.niuke.entity.User;
 import com.ding.niuke.mapper.DiscussPostMapper;
+import com.ding.niuke.mapper.LoginTicketMapper;
 import com.ding.niuke.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -53,5 +56,18 @@ public class MapperTest {
     public void testForUpdate1(){
         userMapper.updatePassword(157,"123eee");
         System.out.println(userMapper.selectById(157));
+    }
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+    @Test
+    public void testForInsertLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(12);
+        loginTicket.setTicket("012");
+        loginTicket.setStatus(1);
+        loginTicket.setExpired(new Date(System.currentTimeMillis()));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+        LoginTicket log1 = loginTicketMapper.selectByTicket("012");
+        System.out.println(log1);
     }
 }

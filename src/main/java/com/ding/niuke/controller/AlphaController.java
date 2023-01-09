@@ -1,10 +1,12 @@
 package com.ding.niuke.controller;
 
+import com.ding.niuke.util.CommunityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -93,5 +95,22 @@ public class AlphaController {
         emp.put("salary",9000);
         list.add(emp);
         return list;
+    }
+    //cookie示例
+    @GetMapping(value = "/cookie/set")
+    @ResponseBody
+    public String setCookie(HttpServletResponse response){
+        //cookie的value不能有空格
+        Cookie cookie = new Cookie("code", "CommunityUtils.generateUUID()");
+        cookie.setPath("/niuke/alpha");
+        cookie.setMaxAge(60*10);
+        response.addCookie(cookie);
+        return "set cookie";
+    }
+    @GetMapping(value = "/cookie/get")
+    @ResponseBody
+    public String getCookie(@CookieValue("code") String cookieValue){
+        System.out.println(cookieValue);
+        return "get cookie";
     }
 }
