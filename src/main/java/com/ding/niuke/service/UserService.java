@@ -1,6 +1,8 @@
 package com.ding.niuke.service;
 
+import com.ding.niuke.entity.LoginTicket;
 import com.ding.niuke.entity.User;
+import com.ding.niuke.mapper.LoginTicketMapper;
 import com.ding.niuke.mapper.UserMapper;
 import com.ding.niuke.util.CommunityConstant;
 import com.ding.niuke.util.CommunityUtils;
@@ -94,5 +96,13 @@ public class UserService implements CommunityConstant {
         else {
             return ACTIVATION_FAILURE;
         }
+    }
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+    public LoginTicket findLoginTicket(String ticket){
+        return loginTicketMapper.selectByTicket(ticket);
+    }
+    public int updateHeader(int userId,String headerUrl){
+        return userMapper.updateHeader(userId,headerUrl);
     }
 }

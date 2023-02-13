@@ -70,4 +70,9 @@ public class MapperTest {
         LoginTicket log1 = loginTicketMapper.selectByTicket("012");
         System.out.println(log1);
     }
+    @Test
+    public void testForUpdateHeaderUrl(){
+        userMapper.updateHeader(158,"http://images.nowcoder/head/722t,png");
+        System.out.println(userMapper.selectById(158));
+    }
 }
