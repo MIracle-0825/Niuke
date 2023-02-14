@@ -1,4 +1,4 @@
-package com.ding.niuke.controller;
+package com.ding.niuke.controller.interceptor;
 
 import com.ding.niuke.entity.LoginTicket;
 import com.ding.niuke.entity.User;

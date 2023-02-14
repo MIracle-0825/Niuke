@@ -1,5 +1,6 @@
 package com.ding.niuke.controller;
 
+import com.ding.niuke.annotation.LoginRequired;
 import com.ding.niuke.entity.User;
 import com.ding.niuke.service.UserService;
 import com.ding.niuke.util.CommunityUtils;
@@ -39,11 +40,13 @@ public class UserController {
     private UserService userService;
     @Autowired
     private HostHolder hostHolder;
+    @LoginRequired
     @GetMapping(value = "/setting")
     public String getSettingPage(){
         return "site/setting";
     }
 
+    @LoginRequired
     @PostMapping(value = "/upload")
     public String uploadHeader(MultipartFile headerImage, Model model){
         if(headerImage==null){
