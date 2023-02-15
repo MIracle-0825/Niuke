@@ -75,4 +75,13 @@ public class MapperTest {
         userMapper.updateHeader(158,"http://images.nowcoder/head/722t,png");
         System.out.println(userMapper.selectById(158));
     }
+    @Test
+    public void testForS(){
+        DiscussPost post = new DiscussPost();
+        post.setContent("111");
+        post.setUserId(168);
+        post.setTitle("xx");
+        post.setCreateTime(new Date());
+        discussPostMapper.insertDiscussPost(post);
+    }
 }

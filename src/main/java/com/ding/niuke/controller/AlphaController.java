@@ -113,4 +113,12 @@ public class AlphaController {
         System.out.println(cookieValue);
         return "get cookie";
     }
+    //ajax示例
+    @PostMapping(value = "/ajax")
+    @ResponseBody
+    public String testForAjax(String name,int age){
+        System.out.println(name);
+        System.out.println(age);
+        return CommunityUtils.getJSONString(0,"操作成功！");
+    }
 }
