@@ -1,8 +1,10 @@
 package com.ding.niuke;
 
+import com.ding.niuke.entity.Comment;
 import com.ding.niuke.entity.DiscussPost;
 import com.ding.niuke.entity.LoginTicket;
 import com.ding.niuke.entity.User;
+import com.ding.niuke.mapper.CommentMapper;
 import com.ding.niuke.mapper.DiscussPostMapper;
 import com.ding.niuke.mapper.LoginTicketMapper;
 import com.ding.niuke.mapper.UserMapper;
@@ -83,5 +85,12 @@ public class MapperTest {
         post.setTitle("xx");
         post.setCreateTime(new Date());
         discussPostMapper.insertDiscussPost(post);
+    }
+    @Autowired
+    private CommentMapper commentMapper;
+    @Test
+    public void testForComment(){
+        List<Comment> commentList = commentMapper.selectCommentsByEntity(1,228,0,5);
+        commentList.forEach(System.out::println);
     }
 }
