@@ -5,18 +5,14 @@ import com.ding.niuke.entity.Page;
 import com.ding.niuke.entity.User;
 import com.ding.niuke.service.MessageService;
 import com.ding.niuke.service.UserService;
+import com.ding.niuke.util.CommunityUtils;
 import com.ding.niuke.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MessageController {
@@ -26,6 +22,7 @@ public class MessageController {
     private HostHolder hostHolder;
     @Autowired
     private UserService userService;
+
     //私信列表
     @GetMapping(value = "/letter/list")
     public String getLetterList(Model model, Page page){
@@ -98,5 +95,26 @@ public class MessageController {
             }
         }
         return ids;
+    }
+    @RequestMapping(path = "/letter/send", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendLetter(String toName, String content) {
+        User target = userService.findUserByName(toName);
+        if (target == null) {
+            return CommunityUtils.getJSONString(1, "目标用户不存在!");
+        }
+
+        Message message = new Message();
+        message.setFromId(hostHolder.getUser().getId());
+        message.setToId(target.getId());
+        if (message.getFromId() < message.getToId()) {
+            message.setConversationId(message.getFromId() + "_" + message.getToId());
+        } else {
+            message.setConversationId(message.getToId() + "_" + message.getFromId());
+        }
+        message.setContent(content);
+        message.setCreateTime(new Date());
+        messageService.addMessage(message);
+        return CommunityUtils.getJSONString(0);
     }
 }

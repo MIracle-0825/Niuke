@@ -22,4 +22,5 @@ public interface UserMapper {
     int updateHeader(@Param("id")int id, @Param("headerUrl")String headerUrl);
 
     int updatePassword(@Param("id")int id, @Param("password")String password);
+
 }
