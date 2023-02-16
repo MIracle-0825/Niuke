@@ -1,13 +1,7 @@
 package com.ding.niuke;
 
-import com.ding.niuke.entity.Comment;
-import com.ding.niuke.entity.DiscussPost;
-import com.ding.niuke.entity.LoginTicket;
-import com.ding.niuke.entity.User;
-import com.ding.niuke.mapper.CommentMapper;
-import com.ding.niuke.mapper.DiscussPostMapper;
-import com.ding.niuke.mapper.LoginTicketMapper;
-import com.ding.niuke.mapper.UserMapper;
+import com.ding.niuke.entity.*;
+import com.ding.niuke.mapper.*;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +21,8 @@ public class MapperTest {
     private UserMapper userMapper;
     @Autowired
     private DiscussPostMapper discussPostMapper;
+    @Autowired
+    private MessageMapper messageMapper;
     @Test
     public void testForSelectUser(){
         System.out.println(userMapper.selectById(101));
@@ -92,5 +88,21 @@ public class MapperTest {
     public void testForComment(){
         List<Comment> commentList = commentMapper.selectCommentsByEntity(1,228,0,5);
         commentList.forEach(System.out::println);
+    }
+    @Test
+    public void testForMessage(){
+       /* List<Message> list = messageMapper.selectConversations(111, 0, 20);
+        list.forEach(System.out::println);*/
+        int i = messageMapper.selectConversationCount(111);
+        System.out.println(i);
+        System.out.println("=====================");
+        List<Message> list1 = messageMapper.selectLetters("111_112", 0, 10);
+        list1.forEach(System.out::println);
+        int i1 = messageMapper.selectLetterCount("111_112");
+        System.out.println(i1);
+        System.out.println("=====================");
+        int i2 = messageMapper.selectLetterUnreadCount(131, "111_131");
+        System.out.println(i2);
+        System.out.println("=====================");
     }
 }
