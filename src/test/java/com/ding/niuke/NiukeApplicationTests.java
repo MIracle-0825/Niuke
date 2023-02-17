@@ -10,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.BoundValueOperations;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -41,5 +46,43 @@ public class NiukeApplicationTests implements ApplicationContextAware {
         SimpleDateFormat simpleDateFormat = alphaConfig.simpleDateFormat();
         String date = simpleDateFormat.format(new Date());
         System.out.println(date);
+    }
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Test
+    public void testForRedis(){
+        String redisKey = "test:count";
+        redisTemplate.opsForValue().set(redisKey,1);
+        System.out.println(redisTemplate.opsForValue().get(redisKey));
+        System.out.println(redisTemplate.opsForValue().increment(redisKey));
+
+    }
+    @Test
+    public void testForRedisKey(){
+        String redisKey = "test:count";
+        BoundValueOperations operations = redisTemplate.boundValueOps(redisKey);
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        System.out.println(operations.get());
+    }
+    //编程式事务
+    @Test
+    public void testForRedisTransaction(){
+        Object obj = redisTemplate.execute(new SessionCallback() {
+            @Override
+            public Object execute(RedisOperations redisOperations) throws DataAccessException {
+                String redisKey = "test:tx";
+                //启用事务
+                redisOperations.multi();
+                redisOperations.opsForSet().add(redisKey,"zhangsan");
+                redisOperations.opsForSet().add(redisKey,"lisi");
+                redisOperations.opsForSet().add(redisKey,"wangwu");
+                redisOperations.opsForSet().add(redisKey,"zhaoliu");
+                System.out.println(redisOperations.opsForSet().members(redisKey));
+                return redisOperations.exec();
+            }
+        });
+        System.out.println(obj);
     }
 }
