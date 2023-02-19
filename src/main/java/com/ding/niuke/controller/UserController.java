@@ -2,6 +2,7 @@ package com.ding.niuke.controller;
 
 import com.ding.niuke.annotation.LoginRequired;
 import com.ding.niuke.entity.User;
+import com.ding.niuke.service.LikeService;
 import com.ding.niuke.service.UserService;
 import com.ding.niuke.util.CommunityUtils;
 import com.ding.niuke.util.HostHolder;
@@ -40,6 +41,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private HostHolder hostHolder;
+    @Autowired
+    private LikeService likeService;
     @LoginRequired
     @GetMapping(value = "/setting")
     public String getSettingPage(){
@@ -102,6 +105,17 @@ public class UserController {
         } catch (IOException e) {
            logger.error("读取头像失败："+e.getMessage());
         }
-
+    }
+    //个人主页
+    @GetMapping(value = "/profile/{userId}")
+    public String getProfilePage(@PathVariable("userId") int userId,Model model){
+        User user = userService.findUserById(userId);
+        if(user == null){
+            throw new RuntimeException("该用户不存在");
+        }
+        model.addAttribute("user",user);
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount",likeCount);
+        return "/site/profile";
     }
 }
