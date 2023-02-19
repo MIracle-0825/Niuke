@@ -4,7 +4,9 @@ import com.ding.niuke.entity.DiscussPost;
 import com.ding.niuke.entity.Page;
 import com.ding.niuke.entity.User;
 import com.ding.niuke.service.DiscussPostService;
+import com.ding.niuke.service.LikeService;
 import com.ding.niuke.service.UserService;
+import com.ding.niuke.util.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
     @Autowired
     private DiscussPostService discussPostService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LikeService likeService;
 
     @GetMapping(value = "/index")
     public String getIndexPage(Model model,Page page){
@@ -34,6 +38,8 @@ public class HomeController {
                 map.put("post",post);
                 User user = userService.findUserById(post.getUserId());
                 map.put("user",user);
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                map.put("likeCount",likeCount);
                 discussPosts.add(map);
             }
         }
