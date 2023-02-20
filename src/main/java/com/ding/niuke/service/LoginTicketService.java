@@ -5,8 +5,10 @@ import com.ding.niuke.entity.User;
 import com.ding.niuke.mapper.LoginTicketMapper;
 import com.ding.niuke.mapper.UserMapper;
 import com.ding.niuke.util.CommunityUtils;
+import com.ding.niuke.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,6 +21,8 @@ public class LoginTicketService {
     private LoginTicketMapper loginTicketMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
     public Map<String,Object> login(String username ,String password,int expiredSeconds){
         HashMap<String, Object> map = new HashMap<>();
         //空值处理
@@ -50,11 +54,17 @@ public class LoginTicketService {
         loginTicket.setTicket(CommunityUtils.generateUUID());
         loginTicket.setStatus(0);
         loginTicket.setExpired(new Date(System.currentTimeMillis()+expiredSeconds*1000));
-        loginTicketMapper.insertLoginTicket(loginTicket);
+        //loginTicketMapper.insertLoginTicket(loginTicket);
+        String redisKey = RedisKeyUtil.getTicketKey(loginTicket.getTicket());
+        redisTemplate.opsForValue().set(redisKey,loginTicket);
         map.put("ticket",loginTicket.getTicket());
         return map;
     }
     public void logOut(String ticket){
-        loginTicketMapper.updateStatus(ticket,1);
+        String redisKey = RedisKeyUtil.getTicketKey(ticket);
+        LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(redisKey);
+        loginTicket.setStatus(1);
+        redisTemplate.opsForValue().set(redisKey,loginTicket);
+        //loginTicketMapper.updateStatus(ticket,1);
     }
 }
