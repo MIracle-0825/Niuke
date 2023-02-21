@@ -3,6 +3,7 @@ package com.ding.niuke;
 import com.ding.niuke.config.AlphaConfig;
 import com.ding.niuke.dao.AlphaDao;
 import com.ding.niuke.mapper.UserMapper;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
@@ -15,6 +16,9 @@ import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -84,5 +88,34 @@ public class NiukeApplicationTests implements ApplicationContextAware {
             }
         });
         System.out.println(obj);
+    }
+    //kafka
+    @Autowired
+    private kafkaProducer kafkaProducer;
+    @Test
+    public void testKafka() {
+        kafkaProducer.sendMessage("test","你好");
+        kafkaProducer.sendMessage("test","在吗");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+@Component
+class kafkaProducer{
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
+    public void sendMessage(String topic,String content){
+        kafkaTemplate.send(topic,content);
+    }
+}
+@Component
+class kafkaConsumer{
+    @KafkaListener(topics = {"test"})
+    public void handlerMessage(ConsumerRecord record){
+        System.out.println(record.value());
     }
 }
