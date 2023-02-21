@@ -1,7 +1,9 @@
 package com.ding.niuke.controller;
 
+import com.ding.niuke.entity.Event;
 import com.ding.niuke.entity.Page;
 import com.ding.niuke.entity.User;
+import com.ding.niuke.event.EventProducer;
 import com.ding.niuke.service.FollowService;
 import com.ding.niuke.service.UserService;
 import com.ding.niuke.util.CommunityConstant;
@@ -26,11 +28,20 @@ public class FollowController implements CommunityConstant {
     private HostHolder hostHolder;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EventProducer eventProducer;
     @PostMapping(value = "/follow")
     @ResponseBody
     public String follow(int entityType,int entityId){
         User user = hostHolder.getUser();
         followService.follow(user.getId(),entityType,entityId);
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
         return CommunityUtils.getJSONString(0,"已关注");
     }
     @PostMapping(value = "/unfollow")
